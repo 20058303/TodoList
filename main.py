@@ -7,13 +7,19 @@ class ToDoList:
         self.main_loop()
 
     def main_loop(self):
-        print("What would you like to do?\n 1: Show all Objectives\n 2: Add new objective \n 3: Remove objective")
+        print("What would you like to do?\n 1: Show all Objectives\n 2: Add new objective\n 3: Edit objective \n 4: Remove objective")
         choice = input("> ")
         if choice == "1":
             self.display_all()
         elif choice == "2":
             self.add_objective()
         elif choice == "3":
+            if len(self.objective_list) > 0:
+                self.edit_objective()
+            else:
+                print("\n ## No objectives to be edited!\n")
+                self.main_loop()
+        elif choice == "4":
             if len(self.objective_list) > 0:
                 self.remove_objective()
             else:
@@ -44,6 +50,29 @@ class ToDoList:
         self.objective_list.append(new_obj)
         self.main_loop()
 
+    def edit_objective(self):
+        try:
+            number = input("Which objective would you like to edit? (index only) > ")
+            if int(number) > len(self.objective_list):
+                print("\n ## Number out of range, please try again!\n")
+                self.edit_objective()
+            else:
+                obj_to_edit = self.objective_list[int(number)-1]
+                name = obj_to_edit.name
+                description = obj_to_edit.description
+
+                name = input(f"What do you want to rename this Todo?\n (Current: {name})\n > ")
+
+                description = input(f"What do you want the new objective to be?\n (Current: {description})\n > ")
+                obj_to_edit.name = name
+                obj_to_edit.description = description
+                print('Updated successfully!')
+                self.main_loop()
+
+        except ValueError:
+            print("\n## Input is not a number, please try again!\n")
+            self.edit_objective()
+
     def remove_objective(self):
         try:
             number = input("Which objective would you like to remove? (index only) > ")
@@ -58,12 +87,13 @@ class ToDoList:
             self.remove_objective()
 
     def display_all(self):
-        print("All Todo Objectives: ")
+        print("\nAll Todo Objectives: ")
         if len(self.objective_list) > 0:
             index = 1
             for obj in self.objective_list:
-                print(f"[{index}] {obj}")
+                print(f" [{index}] {obj}")
                 index += 1
+            print("\n")
         else:
             print("\n## No objectives saved!\n")
 
